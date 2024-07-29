@@ -1,23 +1,24 @@
-from django.shortcuts import render
-from .serializers import UserSerializers, TodoSerializers, WebsiteViewsSerializers
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from django.contrib.auth.models import User
+from .serializers import UserSerializer, TodoSerializer, WebsiteViewsSerializer
 from .models import TodoList, WebsiteViews
-from rest_framework import generics
 
-# Create your views here.
+
 class UserApiView(ListCreateAPIView):
-    serializer_class = UserSerializers
+    serializer_class = UserSerializer
     queryset = User.objects.all()
 
-class TodoApiView(generics.ListCreateAPIView):
+
+class TodoApiListView(ListCreateAPIView):
+    serializer_class = TodoSerializer
     queryset = TodoList.objects.all()
-    serializer_class = TodoSerializers
+
 
 class TodoApiUpdateView(RetrieveUpdateDestroyAPIView):
-    serializer_class = TodoSerializers
+    serializer_class = TodoSerializer
     queryset = TodoList.objects.all()
 
-class WebsiteViewsAPI(ListCreateAPIView):
-    serializer_class = WebsiteViewsSerializers
+
+class WebsiteViewsApi(ListCreateAPIView):
+    serializer_class = WebsiteViewsSerializer
     queryset = WebsiteViews.objects.all()

@@ -1,17 +1,17 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import TodoList, WebsiteViews
-from datetime import datetime
 
 
-class UserSerializers(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["username", "email", "password"]
+        fields = ["first_name", "last_name", "username", "password"]
 
     def create(self, validated_data):
         user = User(
-            email=validated_data["email"],
+            first_name=validated_data["first_name"],
+            last_name=validated_data["last_name"],
             username=validated_data["username"],
         )
         user.set_password(validated_data["password"])
@@ -19,23 +19,16 @@ class UserSerializers(serializers.ModelSerializer):
         return user
 
 
-class TodoSerializers(serializers.ModelSerializer):
-    created_at = serializers.SerializerMethodField()
-
+class TodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = TodoList
         fields = ["id", "title", "status", "created_at"]
 
-    def get_created_at(self, obj):
-        if isinstance(obj.created_at, datetime):
-            return obj.created_at.date()
-        return obj.created_at
-    
 
-class WebsiteViewsSerializers(serializers.ModelSerializer):
+class WebsiteViewsSerializer(serializers.ModelSerializer):
     class Meta:
         model = WebsiteViews
-        fields = ["id","total_views"]
+        fields = ["id", "total_views"]
 
     def create(self, validated_data):
         totalViews = WebsiteViews.objects.count()
