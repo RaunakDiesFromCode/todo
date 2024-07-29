@@ -1,27 +1,29 @@
-"use client"
+"use client";
 import React, { useState, useEffect } from 'react';
 
 const Edit = ({ params }: { params: { id: string } }) => {
-
     const [todoList, setTodoList] = useState<{ title: string } | undefined>();
     const [successMsg, setSuccessMsg] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
     const paramsId = params.id;
 
-    function handleChange(e: React.ChangeEvent<HTMLInputElement>){
-        setTodoList({'title': e.target.value})
+    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+        setTodoList({ 'title': e.target.value });
     }
 
     async function fetchData() {
-        const res = await fetch(`http://localhost:8000/api/todos/${paramsId}`)
-        const resData = await res.json()
-        setTodoList(resData)
+        try {
+            const res = await fetch(`http://localhost:8000/api/todos/${paramsId}`);
+            const resData = await res.json();
+            setTodoList(resData);
+        } catch (error) {
+            setErrorMsg('Failed to fetch data');
+        }
     }
 
     useEffect(() => {
-        fetchData()
-    }, [])
-
+        fetchData();
+    }, [paramsId]);
 
     const submitHandler = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -30,35 +32,39 @@ const Edit = ({ params }: { params: { id: string } }) => {
         const day = String(currentDate.getDate()).padStart(2, '0');
         const month = String(currentDate.getMonth() + 1).padStart(2, '0');
         const year = String(currentDate.getFullYear());
-        const formattedDate = `${year}-${day}-${month}`;
+        const formattedDate = `${year}-${month}-${day}`;
 
         const formData = {
             title: fd.get('title'),
             // created_at: formattedDate
-        }
+        };
+
         console.log("Form Data:", formData);
 
+        try {
+            const res = await fetch(`http://localhost:8000/api/todos/${paramsId}/`, {
+                method: 'PATCH',
+                body: JSON.stringify(formData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
 
-        const res = await fetch(`http://localhost:8000/api/todos/${paramsId}`, {
-            method: 'PATCH',
-            body: JSON.stringify(formData),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        console.log(res)
-
-        if (res.ok) {
-            setSuccessMsg("Data added successfully");
-            setErrorMsg('');
-        } else {
             const resData = await res.json();
-            const result = resData.title
+            console.log("Response:", resData);
+
+            if (res.ok) {
+                setSuccessMsg("Data updated successfully");
+                setErrorMsg('');
+            } else {
+                setErrorMsg(resData.title || 'Error updating data');
+                setSuccessMsg('');
+            }
+        } catch (error) {
+            setErrorMsg('Failed to update data');
             setSuccessMsg('');
-            setErrorMsg(result);
         }
-    }
+    };
 
     return (
         <div>TODO {params.id}
@@ -79,9 +85,9 @@ const Edit = ({ params }: { params: { id: string } }) => {
                         <button type="submit" className="w-fit text-white bg-gray-600 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Edit</button>
                     </div>
                 </form>
-            </div></div>
+            </div>
+        </div>
+    );
+};
 
-    )
-}
-
-export default Edit
+export default Edit;

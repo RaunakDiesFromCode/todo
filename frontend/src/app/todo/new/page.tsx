@@ -12,16 +12,16 @@ const Page = () => {
         const day = String(currentDate.getDate()).padStart(2, '0');
         const month = String(currentDate.getMonth() + 1).padStart(2, '0');
         const year = String(currentDate.getFullYear());
-        const formattedDate = `${year}-${day}-${month}`;
+        const formattedDate = `${year}-${month}-${day}`;
 
         const formData = {
             title: fd.get('title'),
-            // created_at: formattedDate
+            created_at: formattedDate
         }
         console.log("Form Data:", formData);
 
 
-        const res = await fetch('http://localhost:8000/api/todos', {
+        const res = await fetch('http://localhost:8000/api/todos/', {
             method: 'POST',
             body: JSON.stringify(formData),
             headers: {

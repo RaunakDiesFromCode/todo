@@ -1,7 +1,7 @@
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from django.contrib.auth.models import User
-from .serializers import UserSerializer, TodoSerializer, WebsiteViewsSerializer
-from .models import TodoList, WebsiteViews
+from .serializers import UserSerializer, TodoSerializer
+from .models import TodoList
 
 
 class UserApiView(ListCreateAPIView):
@@ -17,8 +17,3 @@ class TodoApiListView(ListCreateAPIView):
 class TodoApiUpdateView(RetrieveUpdateDestroyAPIView):
     serializer_class = TodoSerializer
     queryset = TodoList.objects.all()
-
-
-class WebsiteViewsApi(ListCreateAPIView):
-    serializer_class = WebsiteViewsSerializer
-    queryset = WebsiteViews.objects.all()

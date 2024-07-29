@@ -15,13 +15,6 @@ class TodoList(models.Model):
         return self.title
 
 
-class WebsiteViews(models.Model):
-    total_views = models.PositiveIntegerField(default=0)
-
-    def __str__(self):
-        return self.total_views
-
-
 @receiver(post_save, sender=User)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:

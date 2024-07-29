@@ -19,7 +19,7 @@ const TodoList = () => {
     }, [])
 
     async function taskDoneHandler(task_id: string) {
-        const res = await fetch(`http://localhost:8000/api/todos/${task_id}`,
+        const res = await fetch(`http://localhost:8000/api/todos/${task_id}/`,
             {
                 method: 'PATCH',
                 'body': JSON.stringify({ 'status': true }),
